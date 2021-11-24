@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="2fcfea46-6dcf-4679-a49c-bd332640edae" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<flow name="calculatorFlow" doc:id="a9ca29a2-301d-4180-940d-e52fefe28767" >
+		<http:listener doc:name="Listener" doc:id="d849a91d-f80f-4e12-b1cc-dce7bd9ff619" config-ref="HTTP_Listener_config" path="/Calculator"/>
+		<logger level="INFO" doc:name="Logger" doc:id="76fa66cb-4f4e-412f-8252-a24f282cc468" message="Request ecieve for calculator#[attributes.headers.MSDID]"/>
+		<set-variable value="#[attributes.queryParms.firstnumber]" doc:name="Set Variable" doc:id="84cad987-f92a-417f-bced-8885eb0919b6" variableName="FirastNum"/>
+		<set-variable value="#[attributes.queryParams.Secondnumber]" doc:name="Set Variable" doc:id="1a31c206-e4df-436a-b8d4-a60f193c0f4b" variableName="SecondNum"/>
+		<set-variable value="#[attributes.queryParams.operation]" doc:name="Set Variable" doc:id="069b1428-9474-443f-bacf-956b200d66b3" variableName="Operations"/>
+		<choice doc:name="Choice" doc:id="d5da469d-640d-46fe-b34a-e1e3ed652dbb" >
+			<when expression='#[vars.operationVar == "Plus"]'>
+				<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "result":vars.FirastNum as Number + vars.SecondNum as Number&#10;}]' doc:name="Set Payload" doc:id="77a209f2-4801-4a32-a9b4-9b1afdf53d5f" />
+			</when>
+			<when expression='#[vars.OperationVar == "Minus"]'>
+				<set-payload value='#[%dw 2.0&#10;output application/json&#10;---&#10;{&#10;  "result":vars.FirastNum as Number - vars.SecondNum as Number&#10;}]' doc:name="Set Payload" doc:id="503b83f2-6996-4b15-8b34-1b06fc3f455a" />
+			</when>
+		</choice>
+	</flow>
+</mule>
